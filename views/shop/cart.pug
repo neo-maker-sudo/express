@@ -2,3 +2,19 @@ extends ../layouts/main-layout.pug
 
 block styles
     link(rel="stylesheet" href="/css/main.css")
+block content
+    main
+        if products.length > 0
+            ul
+                each p in products
+                        div.block
+                            li 
+                                p #{p.title} (#{p.cartItem.quantity})
+                                form(action="/cart-delete-item" method="POST")
+                                    button.btn(type="submit") Delete
+                                    input(type="hidden" name="productId" value=p.id)
+            .center
+                form(action="/create-order" method="POST")
+                    button.btn(type="submit") ORDER NOW 
+        else
+            h1 No Product In Cart !!

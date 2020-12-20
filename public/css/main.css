@@ -47,7 +47,13 @@
     .first {
             margin-left: 20px;
     }
-
+    .block {
+        height: 50px;
+    }
+    .center{
+        display: flex;
+        align-items: center;
+    }
     .grid {
         display: flex;
         flex-wrap: wrap;

@@ -5,28 +5,14 @@ const adminRouter = require('./routes/admin');
 const shopRouter = require('./routes/shop');
 const errorController = require('./controllers/404');
 const app = express();
-const sequelize = require('./util/database');
-const Product = require('./models/product');
+const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/user');
-const Cart = require('./models/cart');
-const CartItem = require('./models/cart-item');
-const Order = require('./models/order');
-const OrderItem = require('./models/order-item');
 
-Product.belongsTo(User,{ constraints : true , onDelete : 'CASCADE'});
-User.hasMany(Product);
-User.hasOne(Cart);
-Cart.belongsTo(User);
-Cart.belongsToMany(Product,{ through : CartItem });
-Product.belongsToMany(Cart,{ through : CartItem });
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product,{ through : OrderItem });
 
 app.use((req,res,next)=>{
-    User.findByPk(2)
+    User.findById("5fe20b2d3076334e8e2aa8ad")
     .then(user=>{
-        req.user = user;
+        req.user = new User(user.name,user.email,user.cart,user._id);
         next();
     })
     .catch(err=>console.log(err));
@@ -41,21 +27,7 @@ app.use(shopRouter);
 app.use(errorController.fourofour);
 
 
-sequelize
-.sync()
-.then(()=>{
-    return User.findByPk(2);
-})
-.then(user=>{
-    if(!user){
-        return User.create({name:'Neo', email:'test@test.com'});
-    }
-    return user
-})
-.then(user=>{
-    return user.createCart()
-})
-.then(user=>{
+
+mongoConnect(()=>{
     app.listen(3000);
 })
-.catch(err => console.log(err));

@@ -11,9 +11,8 @@ exports.addProducts = (req,res,next)=>{
 exports.editProducts = (req,res,next)=>{
     const editMode = req.query.edit;
     const prodId = req.params.productId;
-    req.user.getProducts({where : {id:prodId}})
-    .then(products =>{
-        const product = products[0];
+    Product.findById(prodId)
+    .then(product =>{
         if(!product){
             return res.redirect('/');
         };
@@ -27,7 +26,7 @@ exports.editProducts = (req,res,next)=>{
 }
 
 exports.getProducts = (req,res,next)=>{
-    req.user.getProducts()
+    Product.fetchAll()
     .then(products =>{
         res.render('admin/admin-products',{
             prods : products ,
@@ -43,17 +42,20 @@ exports.postProducts = (req,res,next)=>{
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    req.user.createProduct({
-        title : title,
-        imageUrl : imageUrl,
-        description : description,
-        price : price,
-    })
+    const product = new Product (
+        title,
+        price,
+        description,
+        imageUrl,
+        null,
+        req.user._id
+    );
+    product.save()
     .then((result)=>{
         console.log(result);
         res.redirect('/admin/admin-product');
     })
-    .catch(err=>console.log(err))
+    .catch(err=>console.log(err)) 
 };
 
 exports.postEditProducts = (req,res,next) =>{
@@ -62,14 +64,15 @@ exports.postEditProducts = (req,res,next) =>{
     const updateImageUrl = req.body.imageUrl;
     const updateDescription = req.body.description;
     const updatePrice = req.body.price;
-    Product.findByPk(prodId)
-    .then(product=>{
-        product.title = updateTitle;
-        product.imageUrl = updateImageUrl;
-        product.description = updateDescription;
-        product.price = updatePrice;
-        return product.save();
-    })
+    const product = new Product(
+        updateTitle,
+        updatePrice,
+        updateDescription,
+        updateImageUrl,
+        prodId,
+        req.user._id
+    );
+    product.save()
     .then(result=>{
         console.log(result);
     })
@@ -79,9 +82,9 @@ exports.postEditProducts = (req,res,next) =>{
 
 exports.deleteProducts =(req,res,next) =>{
     const deleteId = req.body.deleteId;
-    Product.findByPk(deleteId)
+    Product.deleteById(deleteId)
     .then(product=>{
-        return product.destroy({id:deleteId});
+        return product
     })
     .then( result=>{
         console.log(result)

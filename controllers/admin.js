@@ -4,7 +4,8 @@ exports.addProducts = (req,res,next)=>{
     res.render('admin/edit-product',{
         pagetitle : 'Add Product',
         path:'/add-product',
-        editing: false
+        editing: false,
+        isAuthenticated : req.isLoggedIn
     });
 };
 
@@ -20,18 +21,20 @@ exports.editProducts = (req,res,next)=>{
             pagetitle : 'Edit Product',
             path : '/edit-product',
             editing : editMode,
-            product : product
+            product : product,
+            isAuthenticated : req.isLoggedIn
         })
     }).catch(err=>console.log(err));
 }
 
 exports.getProducts = (req,res,next)=>{
-    Product.fetchAll()
+    Product.find()
     .then(products =>{
         res.render('admin/admin-products',{
             prods : products ,
             pagetitle:'Admin Product',
-            path:'/admin-product'
+            path:'/admin-product',
+            isAuthenticated : req.isLoggedIn
         });
     })
     .catch(err=>{console.log(err)})
@@ -42,14 +45,13 @@ exports.postProducts = (req,res,next)=>{
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    const product = new Product (
-        title,
-        price,
-        description,
-        imageUrl,
-        null,
-        req.user._id
-    );
+    const product = new Product ({
+        title:title,
+        price:price,
+        description:description,
+        imageUrl:imageUrl,
+        userId : req.user
+    });
     product.save()
     .then((result)=>{
         console.log(result);
@@ -64,15 +66,14 @@ exports.postEditProducts = (req,res,next) =>{
     const updateImageUrl = req.body.imageUrl;
     const updateDescription = req.body.description;
     const updatePrice = req.body.price;
-    const product = new Product(
-        updateTitle,
-        updatePrice,
-        updateDescription,
-        updateImageUrl,
-        prodId,
-        req.user._id
-    );
-    product.save()
+    Product.findById(prodId)
+    .then(product=>{
+        product.title = updateTitle;
+        product.imageUrl = updateImageUrl;
+        product.description = updateDescription;
+        product.price = updatePrice;
+        return product.save()
+    })
     .then(result=>{
         console.log(result);
     })
@@ -82,7 +83,7 @@ exports.postEditProducts = (req,res,next) =>{
 
 exports.deleteProducts =(req,res,next) =>{
     const deleteId = req.body.deleteId;
-    Product.deleteById(deleteId)
+    Product.findByIdAndDelete(deleteId)
     .then(product=>{
         return product
     })

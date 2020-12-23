@@ -1,18 +1,33 @@
 const express = require('express');
+const session = require('express-session');
+const mongoDBStore = require('connect-mongodb-session')(session);
 const bodyParser = require('body-parser');
 const path = require('path');
 const adminRouter = require('./routes/admin');
 const shopRouter = require('./routes/shop');
+const authRouter = require('./routes/auth');
 const errorController = require('./controllers/404');
 const app = express();
-const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/user');
-
+const mongoose = require('mongoose');
+const MONGODB_URL = 'mongodb+srv://neo:FGG88SyM0tSdYWM3@cluster0.2wcgz.mongodb.net/shop'
+const store = new mongoDBStore({
+    uri : MONGODB_URL,
+    collection : 'sessions'
+});
+app.use(
+    session({ 
+        secret:'my secret',
+        resave:false,
+        saveUninitialized:false,
+        store : store
+    })
+);
 
 app.use((req,res,next)=>{
-    User.findById("5fe20b2d3076334e8e2aa8ad")
+    User.findById("5fe318c2b12fa91b54286c2b")
     .then(user=>{
-        req.user = new User(user.name,user.email,user.cart,user._id);
+        req.user = user;
         next();
     })
     .catch(err=>console.log(err));
@@ -24,10 +39,27 @@ app.use(bodyParser.urlencoded({extended : false}));
 app.use(express.static(path.join(__dirname,'public')));
 app.use('/admin',adminRouter.routes);
 app.use(shopRouter);
+app.use(authRouter);
 app.use(errorController.fourofour);
 
 
 
-mongoConnect(()=>{
+mongoose.connect(MONGODB_URL)
+.then(result=>{
+    User.findOne().then(user=>{
+        if(!user){
+            const user = new User ({
+                name : 'neo',
+                email : 'abc@gmail.com',
+                cart : {
+                    items : []
+                }
+            })
+            user.save()
+        }
+    })
     app.listen(3000);
+})
+.catch(err=>{
+    console.log(err)
 })

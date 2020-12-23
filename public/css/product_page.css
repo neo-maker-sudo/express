@@ -64,3 +64,40 @@
         color: #fff;
         box-sizing: border-box;
     }
+
+    .main-header__item-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+    .main-header__item {
+        margin: 0 1rem;
+        padding: 0;
+    }
+
+    .main-header__item a,
+    .main-header__item button {
+        font: inherit;
+        background: transparent;
+        border: none;
+        text-decoration: none;
+        color: rgb(10, 10, 10);
+        cursor: pointer;
+    }
+
+    .main-header__item a:hover,
+    .main-header__item a:active,
+    .main-header__item a.active,
+    .main-header__item button:hover,
+    .main-header__item button:active {
+        color:#fa3e25;
+    }
+
+    .addproduct-form {
+        width: 20rem;
+        max-width: 90%;
+        margin: auto;
+        display: block;
+    }

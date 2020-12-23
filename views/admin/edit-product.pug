@@ -2,10 +2,11 @@ extends ../layouts/main-layout.pug
 
 block styles
     link(rel="stylesheet" href="/css/product_page.css")
+    link(rel='stylesheet' href='/css/main.css')
 block content
     main
     if editing
-        form.form1(action="/admin/edit-product",method="POST")
+        form.addproduct-form(action="/admin/edit-product",method="POST")
             .div1
                 label(for="title") Content
                 if editing 
@@ -26,7 +27,7 @@ block content
                 if editing
                     input(type="hidden" name="productId" value=product._id) 
     else
-        form.form1(action="/admin/product",method="POST")
+        form.addproduct-form(action="/admin/product",method="POST")
             .div1
                 label(for="title") Content
                 input#title(type="text",name="title")
@@ -40,10 +41,5 @@ block content
                 label(for="description") Description
                 textarea#description(name="description", rows="5")
                 button(type="submit",id="btn01") Add Product
+
 //- http://localhost:3000/admin/edit-product/1?edit=true
-    //- script.
-    //-     var btn = document.getElementById('btn01');
-    //-     var input = document.getElementById('title');
-    //-     btn.onclick = () => {
-    //-         alert(input.value);
-    //-     };

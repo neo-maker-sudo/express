@@ -5,6 +5,8 @@ block styles
     link(rel="stylesheet" href="/css/main.css")
 block content
     main
+        if errorMessage 
+            .user-message.user-message--error #{errorMessage}
         form.login-form(action="/login",method="POST")
             .form-control
                 label(for="email") E-Mail
@@ -13,3 +15,6 @@ block content
                 label(for="password") Password
                 input#imageUrl(type="password",name="password")
             button.btn(type="submit",id="btn01") Login
+            input(type="hidden" name="_csrf" value=csrfToken)
+        div
+            a.reset(href="/reset") Reset Password

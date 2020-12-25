@@ -7,8 +7,7 @@ exports.getIndex = (req,res,next)=>{
         res.render('shop/index',{
             prods : products ,
             pagetitle:'Shop',
-            path:'/',
-            isAuthenticated : req.isLoggedIn
+            path:'/'
         });
     })
     .catch(err =>{console.log(err);});
@@ -21,7 +20,7 @@ exports.getProducts = (req,res,next)=>{
             prods : products ,
             pagetitle:'Product',
             path:'/product',
-            isAuthenticated : req.isLoggedIn
+            isAuthenticated : req.session.isLoggiedIn
         });
     })
     .catch(err => {console.log(err)});
@@ -35,7 +34,7 @@ exports.getProduct = (req,res,next)=>{
             product : product,
             pagetitle : product.title,
             path : '/products',
-            isAuthenticated : req.isLoggedIn
+            isAuthenticated : req.session.isLoggiedIn
         })
     })
     .catch(err => console.log(err));
@@ -51,7 +50,7 @@ exports.getCart = (req,res,next)=>{
             pagetitle : 'Cart page',
             path : '/cart',
             products : products,
-            isAuthenticated : req.isLoggedIn
+            isAuthenticated : req.session.isLoggiedIn
         });
     })
     .catch(err=>console.log(err));
@@ -90,7 +89,7 @@ exports.postOrder = (req,res,next) => {
         });
         const order = new Order({
             user: {
-                name : req.user.name,
+                email : req.user.email,
                 userId : req.user
             },
             products : products
@@ -107,15 +106,28 @@ exports.postOrder = (req,res,next) => {
 }
 
 exports.getOrder = (req,res,next)=>{
+    if(req.user){
     Order.find({"user.userId": req.user._id})
     .then(orders=>{
         res.render('shop/order',{
             pagetitle : 'Order page',
             path : 'order',
             orders : orders,
-            isAuthenticated : req.isLoggedIn
+            isAuthenticated : req.session.isLoggiedIn
         })
     })
     .catch(err=>console.log(err));
+    }
+    else {
+        Product.find()
+        .then(orders=>{
+            res.render('shop/order',{
+            pagetitle : 'Order page',
+            path : 'order',
+            orders : orders,
+            isAuthenticated : req.session.isLoggiedIn
+            })
+        })
+    }
 }
 

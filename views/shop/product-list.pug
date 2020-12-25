@@ -4,7 +4,7 @@ block styles
     link(rel='stylesheet' href='/css/main.css')
 block content
     main
-        if prods.length > 0
+        if prods.length > 0 && isAuthenticated
             .grid
                 each product in prods
                     article.card.product-item
@@ -21,5 +21,6 @@ block content
                                 form(action="/cart" method="POST")
                                     button.btn(type="submit") Add to Cart
                                     input(type="hidden" name="productId" value=product._id)
+                                    input(type="hidden" name="_csrf" value=csrfToken)
         else
             h1.first No Product

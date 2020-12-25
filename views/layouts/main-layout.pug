@@ -13,17 +13,25 @@ html(lang="en")
                         a(href='/',class=(path === '/' ? 'a' : '')) Shop
                     li.li
                         a(href='/product',class=(path === '/product' ? 'a' : '')) Products
-                    li.li
-                        a(href='/cart',class=(path === '/cart' ? 'a' : '')) Cart
-                    li.li
-                        a(href='/order',class=(path === '/order' ? 'a' : '')) Order
                     if isAuthenticated
+                        li.li
+                            a(href='/cart',class=(path === '/cart' ? 'a' : '')) Cart
+                        li.li
+                            a(href='/order',class=(path === '/order' ? 'a' : '')) Order
                         li.li
                             a(href='/admin/add-product',class=(path === '/add-product' ? 'a' : '' )) Add Product
                         li.li
                             a(href='/admin/admin-product',class=(path === '/admin-product' ? 'a' : '' )) Admin Product
                 ul.main-header__item-list
-                    li.main-header__item
-                        a(href='/login',class=(path === '/login' ? 'a' : '')) Login
+                    if !isAuthenticated
+                        li.main-header__item
+                            a(href='/login',class=(path === '/login' ? 'a' : '')) Login
+                        li.main-header__item
+                            a(href='/signup',class=(path === '/login' ? 'a' : '')) Signup
+                    else
+                        li.main-header__item
+                            form(action="/logout" method="POST")
+                                input(type="hidden" name="_csrf" value=csrfToken)
+                                button(type="submit") Logout
         block content
 

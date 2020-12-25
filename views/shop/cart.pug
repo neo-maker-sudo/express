@@ -4,7 +4,7 @@ block styles
     link(rel="stylesheet" href="/css/main.css")
 block content
     main
-        if products.length > 0
+        if products.length > 0 && isAuthenticated
             ul
                 each p in products
                         div.block
@@ -12,9 +12,11 @@ block content
                                 p #{p.productId.title} (#{p.quantity})
                                 form(action="/cart-delete-item" method="POST")
                                     button.btn(type="submit") Delete
+                                    input(type="hidden" name="_csrf" value=csrfToken)
                                     input(type="hidden" name="productId" value=p.productId._id)
             .center
                 form(action="/create-order" method="POST")
+                    input(type="hidden" name="_csrf" value=csrfToken)
                     button.btn(type="submit") ORDER NOW 
         else
             h1 No Product In Cart !!

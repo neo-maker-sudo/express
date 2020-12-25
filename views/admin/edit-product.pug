@@ -23,8 +23,10 @@ block content
                 label(for="description") Description
                 if editing
                     textarea#description(name="description", rows="5" ) #{product.description} 
+                    input(type="hidden" name="_csrf" value=csrfToken)
                     button(type="submit",id="btn01") Update Product
                 if editing
+                    input(type="hidden" name="_csrf" value=csrfToken)
                     input(type="hidden" name="productId" value=product._id) 
     else
         form.addproduct-form(action="/admin/product",method="POST")
@@ -40,6 +42,7 @@ block content
             .div1
                 label(for="description") Description
                 textarea#description(name="description", rows="5")
+                input(type="hidden" name="_csrf" value=csrfToken)
                 button(type="submit",id="btn01") Add Product
 
 //- http://localhost:3000/admin/edit-product/1?edit=true

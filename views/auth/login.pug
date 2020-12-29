@@ -7,13 +7,23 @@ block content
     main
         if errorMessage 
             .user-message.user-message--error #{errorMessage}
-        form.login-form(action="/login",method="POST")
+        form.login-form(action="/login",method="POST" novalidate)
             .form-control
                 label(for="email") E-Mail
-                input#title(type="email",name="email")
+                input#title(
+                        class=validationError.find(e=>e.param === 'email') ? 'invalid' : ''
+                        type="email"
+                        name="email"
+                        value=oldput.email
+                    )
             .form-control
                 label(for="password") Password
-                input#imageUrl(type="password",name="password")
+                input#imageUrl(
+                        class=validationError.find(e=>e.param === 'password') ? 'invalid' : ''
+                        type="password"
+                        name="password"
+                        value=oldput.password
+                    )
             button.btn(type="submit",id="btn01") Login
             input(type="hidden" name="_csrf" value=csrfToken)
         div

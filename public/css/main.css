@@ -60,7 +60,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        left: 53%;
+        left: 49%;
         bottom : 15px;
         width: 10%;
     }
@@ -177,4 +177,10 @@
     .user-message--error {
         background : rgb(228, 121, 121);
         border: 1px solid rgb(240, 68, 68);
+    }
+
+    .abc{
+        text-decoration: none;
+        font-size: 18px;
+        margin-left: 10px;
     }

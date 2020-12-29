@@ -1,3 +1,6 @@
+*{
+  position: relative;
+}
 .form-control {
   margin: 1rem 0;
 }
@@ -27,4 +30,17 @@
   max-width: 90%;
   margin: auto;
   display: block;
+}
+.form-control input.invalid{
+  border-color: red;
+}
+
+.form-control textarea.invalid{
+  border-color: red;
+}
+
+#clear {
+  position: absolute;
+  left: 52.6%;
+  top : 85%
 }

@@ -3,39 +3,69 @@ extends ../layouts/main-layout.pug
 block styles
     link(rel="stylesheet" href="/css/product_page.css")
     link(rel='stylesheet' href='/css/main.css')
+    link(rel="stylesheet" href="/css/forms.css")
 block content
     main
     if editing
-        form.addproduct-form(action="/admin/edit-product",method="POST")
+        if errorMessage
+            .user-message.user-message--error #{errorMessage}
+        form.addproduct-form(action="/admin/edit-product",method="POST" enctype="multipart/form-data" novalidate)
             .div1
                 label(for="title") Content
-                if editing 
-                    input#title(type="text",name="title" value=product.title)
+                if editing || hasError
+                    input#title(
+                            class=validationError.find(e=>e.param === 'title') ? 'invalid' : ''
+                            type="text"
+                            name="title" 
+                            value=product.title
+                        )
+            //- .div1
+            //-     label(for="imageUrl") ImageUrl
+            //-     if editing || hasError
+            //-         input#imageUrl(
+            //-                 class=validationError.find(e=>e.param === 'imageUrl') ? 'invalid' : ''
+            //-                 type="text"
+            //-                 name="imageUrl" 
+            //-                 value=if(editing || hasError) product.imageUrl
+            //-             )
             .div1
-                label(for="imageUrl") ImageUrl
-                if editing
-                    input#imageUrl(type="text",name="imageUrl" value=product.imageUrl)
+                label(for="image") Image
+                if editing || hasError
+                    input#image(
+                            type="file"
+                            name="image" 
+                        )
             .div1
                 label(for="price") price
-                if editing
-                    input#price(type="number",name="price" step="0.01" value=product.price)
+                if editing || hasError
+                    input#price(
+                            class=validationError.find(e=>e.param === 'price') ? 'invalid' : ''
+                            type="number"
+                            name="price"
+                            step="0.01"
+                            value=product.price
+                        )
             .div1
                 label(for="description") Description
-                if editing
-                    textarea#description(name="description", rows="5" ) #{product.description} 
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    button(type="submit",id="btn01") Update Product
-                if editing
+                if editing || hasError
+                    textarea#description(
+                            class=validationError.find(e=>e.param === 'description') ? 'invalid' : ''
+                            name="description"
+                            rows="5" 
+                        ) #{product.description} 
                     input(type="hidden" name="_csrf" value=csrfToken)
                     input(type="hidden" name="productId" value=product._id) 
+                    button(type="submit",id="btn01") Update Product
     else
-        form.addproduct-form(action="/admin/product",method="POST")
+        if errorMessage 
+            .user-message.user-message--error #{errorMessage}
+        form.addproduct-form(action="/admin/product",method="POST" enctype="multipart/form-data")
             .div1
                 label(for="title") Content
                 input#title(type="text",name="title")
             .div1
-                label(for="imageUrl") ImageUrl
-                input#imageUrl(type="text",name="imageUrl")
+                label(for="image") Image
+                input#image(type="file",name="image")
             .div1
                 label(for="price") price
                 input#price(type="number",name="price" step="0.01")

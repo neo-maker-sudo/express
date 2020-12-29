@@ -11,8 +11,10 @@ block content
                 each order in orders
                     li
                         h1 #{order._id}
+                            a.abc(href="/order/"+order._id) - invoice
                         ul
                             each p in order.products
-                                li #{p.product.title} (#{p.quantity})
+                                li #{p.product.title} (#{p.quantity}) 
+                                
                                 
                                 
